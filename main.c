@@ -1,11 +1,7 @@
 #include "hsh.h"
 
-extern char **environ;
-
-char *find_path(char *command);
-
 /**
- * main - Entry point for simple shell
+ * main - Entry point of the simple shell
  *
  * Return: Always 0
  */
@@ -13,10 +9,7 @@ int main(void)
 {
 	char *line = NULL;
 	size_t len = 0;
-	pid_t pid;
-	int status;
 	char *argv[64];
-	char *cmd_path;
 
 	while (1)
 	{
@@ -28,13 +21,13 @@ int main(void)
 
 		line[strcspn(line, "\n")] = '\0';
 
-		/* Parse input */
+		/* Parsing */
 		{
 			char *token;
 			int i = 0;
 
 			token = strtok(line, " ");
-			while (token != NULL)
+			while (token)
 			{
 				argv[i++] = token;
 				token = strtok(NULL, " ");
@@ -45,32 +38,10 @@ int main(void)
 		if (argv[0] == NULL)
 			continue;
 
-		cmd_path = find_path(argv[0]);
-		if (cmd_path == NULL)
-		{
-			fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
-			continue;
-		}
-
-		pid = fork();
-		if (pid == 0)
-		{
-			execve(cmd_path, argv, environ);
-			perror("execve");
-			exit(EXIT_FAILURE);
-		}
-		else if (pid > 0)
-		{
-			wait(&status);
-			free(cmd_path);
-		}
-		else
-		{
-			perror("fork");
-			free(cmd_path);
-		}
+		execute_cmd(argv);
 	}
 
 	free(line);
 	return (0);
 }
+

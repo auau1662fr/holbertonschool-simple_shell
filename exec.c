@@ -1,8 +1,8 @@
 #include "hsh.h"
 
 /**
- * execute_cmd - executes command
- * @argv: arguments
+ * execute_cmd - Executes a command
+ * @argv: argument vector
  */
 void execute_cmd(char **argv)
 {

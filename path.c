@@ -1,17 +1,17 @@
 #include "hsh.h"
 
 /**
- * find_path - Finds the full path of a command
- * @command: Command to locate
+ * find_path - Finds full path of a command
+ * @command: command name
  *
- * Return: Full path if found, otherwise NULL
+ * Return: full path or NULL
  */
 char *find_path(char *command)
 {
 	char *path_env, *path_copy, *dir, *full_path;
 	size_t len;
 
-	if (command == NULL)
+	if (!command)
 		return (NULL);
 
 	if (strchr(command, '/'))
@@ -22,24 +22,16 @@ char *find_path(char *command)
 	}
 
 	path_env = getenv("PATH");
-	if (path_env == NULL)
+	if (!path_env)
 		return (NULL);
 
 	path_copy = strdup(path_env);
-	if (path_copy == NULL)
-		return (NULL);
-
 	dir = strtok(path_copy, ":");
-	while (dir != NULL)
+
+	while (dir)
 	{
 		len = strlen(dir) + strlen(command) + 2;
 		full_path = malloc(len);
-		if (full_path == NULL)
-		{
-			free(path_copy);
-			return (NULL);
-		}
-
 		sprintf(full_path, "%s/%s", dir, command);
 
 		if (access(full_path, X_OK) == 0)
@@ -55,3 +47,4 @@ char *find_path(char *command)
 	free(path_copy);
 	return (NULL);
 }
+
