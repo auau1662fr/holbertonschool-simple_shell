@@ -36,7 +36,10 @@ int main(void)
 		}
 
 		if (argv[0] == NULL)
-			continue;
+		continue;
+
+		if (handle_builtin(argv))
+		break;
 
 		execute_cmd(argv);
 	}
