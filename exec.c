@@ -1,10 +1,6 @@
 #include "hsh.h"
 
-/**
- * execute_cmd - Executes a command
- * @argv: argument vector
- */
-void execute_cmd(char **argv)
+int execute_cmd(char **argv)
 {
 	pid_t pid;
 	char *path;
@@ -13,7 +9,7 @@ void execute_cmd(char **argv)
 	if (!path)
 	{
 		fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
-		return;
+		return (1);
 	}
 
 	pid = fork();
@@ -23,9 +19,9 @@ void execute_cmd(char **argv)
 		perror("execve");
 		exit(1);
 	}
-	else
+	else if (pid > 0)
 		wait(NULL);
 
-	free(path);
+	return (0);
 }
 
