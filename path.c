@@ -1,5 +1,12 @@
 #include "hsh.h"
 
+/**
+ * find_path - Trouve le chemin d'une commande
+ * @command: Nom de la commande
+ *
+ * Return: Chemin complet ou NULL
+ */
+
 char *find_path(char *command)
 {
 	char *path, *path_copy, *dir;

@@ -1,11 +1,15 @@
 #include "hsh.h"
 
 /**
- * handle_sigint - handles Ctrl+C
+ * handle_sigint - Gère le signal CTRL+C
+ * @sig: Signal reçu
+ *
+ * Return: Rien
  */
+
 void handle_sigint(int sig)
 {
-    (void)sig;
-    write(STDOUT_FILENO, "\n", 1);
+	(void)sig;
+	write(STDOUT_FILENO, "\n", 1);
 }
 

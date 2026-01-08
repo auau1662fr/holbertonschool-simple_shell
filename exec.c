@@ -1,5 +1,12 @@
 #include "hsh.h"
 
+/**
+ * execute_cmd - Exécute une commande
+ * @argv: Tableau des arguments
+ *
+ * Return: 0 en cas de succès, sinon 1
+ */
+
 int execute_cmd(char **argv)
 {
 	pid_t pid;
