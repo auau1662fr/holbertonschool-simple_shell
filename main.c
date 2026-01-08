@@ -39,37 +39,36 @@ int main(int argc, char **argv)
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
-	char **cmd_argv;
-	(void)argc;
-	(void)argv;
+	char **argv;
 
 	signal(SIGINT, handle_sigint);
 
 	while (1)
 	{
-	if (isatty(STDIN_FILENO))
-		write(STDOUT_FILENO, "($) ", 4);
+		if (isatty(STDIN_FILENO))
+			write(STDOUT_FILENO, "($) ", 4);
 
-	read = getline(&line, &len, stdin);
-	if (read == -1)
-	{
-		free(line);
-		exit(0);
-	}
+		read = getline(&line, &len, stdin);
+		if (read == -1)
+		{
+			free(line);
+			exit(0);
+		}
 
-	cmd_argv = parse_line(line);
-	if (!cmd_argv || !cmd_argv[0])
-	{
-		free(cmd_argv);
-		continue;
-	}
+		argv = parse_line(line);
+		if (!argv || !argv[0])
+		{
+			free(argv);
+			continue;
+		}
 
-	if (handle_builtin(cmd_argv))
-	{
-		free(cmd_argv);
-		continue;
-	}
-	execute_cmd(cmd_argv);
-	free(cmd_argv);
+		if (handle_builtin(argv))
+		{
+			free(argv);
+			continue;
+		}
+
+		execute_cmd(argv);
+		free(argv);
 	}
 }
