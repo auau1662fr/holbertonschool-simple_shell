@@ -1,54 +1,46 @@
 #include "hsh.h"
 
 /**
- * handle_builtin - Gère les commandes internes du shell
- * @argv: Tableau des arguments
+ * handle_builtin - Executes built-in commands if they exist
+ * @argv: Array of arguments
  *
- * Return: 1 si builtin exécuté, 0 sinon
+ * Return: 1 if handled, 0 otherwise
  */
-
 int handle_builtin(char **argv)
 {
 	if (strcmp(argv[0], "exit") == 0)
-		return (builtin_exit(argv));
-
+	{
+		builtin_exit(argv);
+		return (1);
+	}
 	if (strcmp(argv[0], "env") == 0)
-		return (builtin_env(argv));
-
+	{
+		builtin_env(argv);
+		return (1);
+	}
 	return (0);
 }
 
 /**
- * builtin_exit - Quitte le shell
- * @argv: Tableau des arguments
- *
- * Return: Rien
+ * builtin_exit - Handles the exit command
+ * @argv: Array of arguments
  */
-
-int builtin_exit(char **argv)
+void builtin_exit(char **argv)
 {
 	(void)argv;
 	exit(0);
 }
 
 /**
- * builtin_env - Affiche l'environnement
- * @argv: Tableau des arguments
- *
- * Return: Rien
+ * builtin_env - Prints environment variables
+ * @argv: Array of arguments
  */
-
-int builtin_env(char **argv)
+void builtin_env(char **argv)
 {
-	int i = 0;
+	int i;
 
 	(void)argv;
-	while (environ[i])
-	{
-		write(STDOUT_FILENO, environ[i], strlen(environ[i]));
-		write(STDOUT_FILENO, "\n", 1);
-		i++;
-	}
-	return (1);
+	for (i = 0; environ[i]; i++)
+		printf("%s\n", environ[i]);
 }
 
