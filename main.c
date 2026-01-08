@@ -39,7 +39,10 @@ int main(int argc, char **argv)
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
-	char **argv;
+	char **args;
+
+	(void)argc;
+	(void)argv;
 
 	signal(SIGINT, handle_sigint);
 
@@ -55,20 +58,21 @@ int main(int argc, char **argv)
 			exit(0);
 		}
 
-		argv = parse_line(line);
-		if (!argv || !argv[0])
+		args = parse_line(line);
+		if (!args || !args[0])
 		{
-			free(argv);
+			free(args);
 			continue;
 		}
 
-		if (handle_builtin(argv))
+		if (handle_builtin(args))
 		{
-			free(argv);
+			free(args);
 			continue;
 		}
 
-		execute_cmd(argv);
-		free(argv);
+		execute_cmd(args);
+		free(args);
 	}
+	return (0);
 }
