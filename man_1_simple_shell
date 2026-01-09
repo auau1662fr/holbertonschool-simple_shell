@@ -1,0 +1,36 @@
+.TH SIMPLE_SHELL 1 "Holberton School" "Simple Shell"
+.SH NAME
+simple_shell \- simple UNIX command interpreter
+
+.SH SYNOPSIS
+.B ./hsh
+
+.SH DESCRIPTION
+Simple Shell is a basic UNIX command line interpreter.
+It executes commands read from standard input.
+
+The shell works in both interactive and non-interactive modes.
+Commands are executed using the PATH environment variable.
+
+.SH BUILTINS
+.TP
+.B exit
+Exit the shell.
+.TP
+.B env
+Print the current environment.
+
+.SH USAGE
+Interactive mode:
+.PP
+./hsh
+.PP
+Non-interactive mode:
+.PP
+echo "ls" | ./hsh
+
+.SH SIGNALS
+Ctrl+C (SIGINT) is handled and does not terminate the shell.
+
+.SH AUTHORS
+auau1662fr

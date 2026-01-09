@@ -1,20 +1,21 @@
 #include "hsh.h"
 
 /**
- * main - simple shell
- * @ac: argument count
- * @av: argument vector
+ * main - Entry point of the simple shell
+ * @argc: Argument count
+ * @argv: Argument vector
  *
- * Return: 0
+ * Return: Always 0
  */
-int main(int ac, char **av)
+int main(int argc, char **argv)
 {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
 	char **args;
 
-	(void)ac;
+	(void)argc;
+
 	signal(SIGINT, handle_sigint);
 
 	while (1)
@@ -24,10 +25,7 @@ int main(int ac, char **av)
 
 		read = getline(&line, &len, stdin);
 		if (read == -1)
-		{
-			free(line);
-			exit(0);
-		}
+			break;
 
 		args = parse_line(line);
 		if (!args || !args[0])
@@ -36,9 +34,12 @@ int main(int ac, char **av)
 			continue;
 		}
 
-		if (!handle_builtin(args))
-			execute_cmd(args, av[0]);
+		if (handle_builtin(args) == 0)
+			execute_cmd(args, argv[0]);
 
 		free(args);
 	}
+
+	free(line);
+	return (0);
 }
