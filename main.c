@@ -1,17 +1,20 @@
 #include "hsh.h"
 
 /**
- * main - simple shell main loop
+ * main - simple shell
+ * @ac: argument count
+ * @av: argument vector
  *
- * Return: Always 0
+ * Return: 0
  */
-int main(void)
+int main(int ac, char **av)
 {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
-	char **argv;
+	char **args;
 
+	(void)ac;
 	signal(SIGINT, handle_sigint);
 
 	while (1)
@@ -26,20 +29,16 @@ int main(void)
 			exit(0);
 		}
 
-		argv = parse_line(line);
-		if (!argv || !argv[0])
+		args = parse_line(line);
+		if (!args || !args[0])
 		{
-			free(argv);
+			free(args);
 			continue;
 		}
 
-		if (handle_builtin(argv))
-		{
-			free(argv);
-			continue;
-		}
+		if (!handle_builtin(args))
+			execute_cmd(args, av[0]);
 
-		execute_cmd(argv);
-		free(argv);
+		free(args);
 	}
 }

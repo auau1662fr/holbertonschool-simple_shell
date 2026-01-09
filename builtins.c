@@ -1,17 +1,24 @@
 #include "hsh.h"
 
 /**
- * handle_builtin - checks builtins
- * @argv: arguments
+ * handle_builtin - handles builtin commands
+ * @args: arguments
  *
  * Return: 1 if builtin, 0 otherwise
  */
-int handle_builtin(char **argv)
+int handle_builtin(char **args)
 {
-	if (strcmp(argv[0], "exit") == 0)
-		return (builtin_exit(argv));
-	if (strcmp(argv[0], "env") == 0)
-		return (builtin_env(argv));
+	int i;
+
+	if (strcmp(args[0], "exit") == 0)
+		exit(0);
+
+	if (strcmp(args[0], "env") == 0)
+	{
+		for (i = 0; environ[i]; i++)
+			printf("%s\n", environ[i]);
+		return (1);
+	}
 	return (0);
 }
 

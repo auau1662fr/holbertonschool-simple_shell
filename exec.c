@@ -2,36 +2,30 @@
 
 /**
  * execute_cmd - executes a command
- * @argv: array of arguments
- *
- * Return: 1 on failure, 0 on success
+ * @args: command arguments
+ * @av: program name
  */
-int execute_cmd(char **argv)
+void execute_cmd(char **args, char *av)
 {
 	pid_t pid;
-	char *path;
-	int status;
+	char *cmd_path;
 
-	path = find_path(argv[0]);
-	if (!path || access(path, X_OK) != 0)
+	cmd_path = find_path(args[0]);
+	if (!cmd_path)
 	{
-		fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
-		return (1);
+		fprintf(stderr, "%s: 1: %s: not found\n", av, args[0]);
+		return;
 	}
 
 	pid = fork();
-	if (pid == -1)
-		return (1);
-
 	if (pid == 0)
 	{
-		if (execve(path, argv, environ) == -1)
-			exit(1);
+		execve(cmd_path, args, environ);
+		perror(av);
+		exit(1);
 	}
 	else
-	{
-		wait(&status);
-	}
+		wait(NULL);
 
-	return (0);
+	free(cmd_path);
 }

@@ -6,25 +6,16 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <signal.h>
 
 extern char **environ;
 
-/* main */
 char **parse_line(char *line);
-
-/* exec */
-int execute_cmd(char **argv);
-
-/* path */
 char *find_path(char *cmd);
-
-/* builtins */
-int handle_builtin(char **argv);
-int builtin_exit(char **argv);
-int builtin_env(char **argv);
-
-/* signals */
+int handle_builtin(char **args);
+void execute_cmd(char **args, char *av);
 void handle_sigint(int sig);
 
 #endif
+
