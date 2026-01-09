@@ -1,62 +1,65 @@
 #include "hsh.h"
 
 /**
- * shell_loop - Main shell loop
- * @argv: Argument vector
+ * read_command - read input from stdin
  *
- * Return: Always 0
+ * Return: input line
  */
-int shell_loop(char **argv)
+char *read_command(void)
 {
 	char *line = NULL;
 	size_t len = 0;
-	ssize_t bytes_read;
+
+	if (getline(&line, &len, stdin) == -1)
+	{
+		free(line);
+		return (NULL);
+	}
+	return (line);
+}
+
+/**
+ * process_command - handle command execution
+ * @args: arguments
+ */
+void process_command(char **args)
+{
+	if (!args || !args[0])
+		return;
+
+	if (handle_builtin(args))
+		return;
+
+	execute_cmd(args);
+}
+
+
+/**
+ * main - simple shell
+ *
+ * Return: 0
+ */
+int main(void)
+{
+	char *line;
 	char **args;
+
+	signal(SIGINT, handle_sigint);
 
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
 			write(STDOUT_FILENO, "($) ", 4);
 
-		bytes_read = getline(&line, &len, stdin);
-		if (bytes_read == -1)
-		{
-			if (isatty(STDIN_FILENO))
-				write(STDOUT_FILENO, "\n", 1);
+		line = read_command();
+		if (!line)
 			break;
-		}
 
 		args = parse_line(line);
-		if (args == NULL || args[0] == NULL)
-		{
-			free(args);
-			continue;
-		}
-
-		if (handle_builtin(args) == 0)
-			execute_cmd(args, argv[0]);
+		process_command(args);
 
 		free(args);
+		free(line);
 	}
-
-	free(line);
-	return (0);
-}
-
-/**
- * main - Entry point of the simple shell
- * @argc: Argument count
- * @argv: Argument vector
- *
- * Return: Always 0
- */
-int main(int argc, char **argv)
-{
-	(void)argc;
-
-	signal(SIGINT, handle_sigint);
-
-	shell_loop(argv);
-
 	return (0);
 }

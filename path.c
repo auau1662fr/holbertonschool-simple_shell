@@ -1,38 +1,47 @@
 #include "hsh.h"
 
 /**
- * find_path - finds command in PATH
+ * find_path - find the command in PATH
  * @cmd: command name
  *
- * Return: full path or NULL
+ * Return: full path if found, NULL otherwise
  */
 char *find_path(char *cmd)
 {
-	char *path, *dir, *full;
-	struct stat st;
+	char *path_env, *path_copy, *dir, *full_path;
+	size_t len;
 
 	if (strchr(cmd, '/'))
 	{
-		if (stat(cmd, &st) == 0 && access(cmd, X_OK) == 0)
+		if (access(cmd, X_OK) == 0)
 			return (strdup(cmd));
 		return (NULL);
 	}
 
-	path = getenv("PATH");
-	if (!path)
+	path_env = getenv("PATH");
+	if (!path_env)
 		return (NULL);
 
-	dir = strtok(strdup(path), ":");
+	path_copy = strdup(path_env);
+	dir = strtok(path_copy, ":");
+
 	while (dir)
 	{
-		full = malloc(strlen(dir) + strlen(cmd) + 2);
-		sprintf(full, "%s/%s", dir, cmd);
+		len = strlen(dir) + strlen(cmd) + 2;
+		full_path = malloc(len);
+		if (!full_path)
+			return (NULL);
 
-		if (stat(full, &st) == 0 && access(full, X_OK) == 0)
-			return (full);
-
-		free(full);
+		sprintf(full_path, "%s/%s", dir, cmd);
+		if (access(full_path, X_OK) == 0)
+		{
+			free(path_copy);
+			return (full_path);
+		}
+		free(full_path);
 		dir = strtok(NULL, ":");
 	}
+
+	free(path_copy);
 	return (NULL);
 }

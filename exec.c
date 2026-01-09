@@ -1,19 +1,19 @@
 #include "hsh.h"
 
 /**
- * execute_cmd - executes a command
- * @args: command arguments
- * @av: program name
+ * execute_cmd - execute external command
+ * @args: arguments array
  */
-void execute_cmd(char **args, char *av)
+void execute_cmd(char **args)
 {
 	pid_t pid;
+	int status;
 	char *cmd_path;
 
 	cmd_path = find_path(args[0]);
 	if (!cmd_path)
 	{
-		fprintf(stderr, "%s: 1: %s: not found\n", av, args[0]);
+		fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
 		return;
 	}
 
@@ -21,11 +21,13 @@ void execute_cmd(char **args, char *av)
 	if (pid == 0)
 	{
 		execve(cmd_path, args, environ);
-		perror(av);
-		exit(1);
+		perror("execve");
+		exit(EXIT_FAILURE);
 	}
+	else if (pid < 0)
+		perror("fork");
 	else
-		wait(NULL);
+		waitpid(pid, &status, 0);
 
 	free(cmd_path);
 }

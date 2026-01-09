@@ -1,56 +1,47 @@
 #include "hsh.h"
 
 /**
- * handle_builtin - handles builtin commands
+ * handle_builtin - check and execute builtin
  * @args: arguments
  *
- * Return: 1 if builtin, 0 otherwise
+ * Return: 1 if builtin executed, 0 otherwise
  */
 int handle_builtin(char **args)
 {
-	int i;
-
 	if (strcmp(args[0], "exit") == 0)
-		exit(0);
-
+		return (builtin_exit(args));
 	if (strcmp(args[0], "env") == 0)
 	{
-		for (i = 0; environ[i]; i++)
-			printf("%s\n", environ[i]);
+		builtin_env(args);
 		return (1);
 	}
 	return (0);
 }
 
 /**
- * builtin_exit - exits shell
- * @argv: arguments
+ * builtin_exit - exit the shell
+ * @args: arguments (optional exit code)
  *
- * Return: 1
+ * Return: always 1 to indicate handled
  */
-int builtin_exit(char **argv)
+int builtin_exit(char **args)
 {
-	(void)argv;
-	exit(0);
+	int code = 0;
+
+	if (args[1])
+		code = atoi(args[1]);
+	exit(code);
 }
 
 /**
- * builtin_env - prints environment
- * @argv: arguments
- *
- * Return: 1
+ * builtin_env - print environment variables
+ * @args: arguments (unused)
  */
-int builtin_env(char **argv)
+void builtin_env(char **args)
 {
-	int i = 0;
+	int i;
 
-	(void)argv;
-	while (environ[i])
-	{
-		write(STDOUT_FILENO, environ[i], strlen(environ[i]));
-		write(STDOUT_FILENO, "\n", 1);
-		i++;
-	}
-	return (1);
+	(void)args;
+	for (i = 0; environ[i]; i++)
+		printf("%s\n", environ[i]);
 }
-

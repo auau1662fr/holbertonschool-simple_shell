@@ -1,27 +1,28 @@
 #include "hsh.h"
 
 /**
- * parse_line - splits a line into arguments
+ * parse_line - split line into arguments
  * @line: input line
  *
  * Return: array of arguments
  */
 char **parse_line(char *line)
 {
-	char **args = malloc(sizeof(char *) * 64);
+	char **tokens;
 	char *token;
 	int i = 0;
 
-	if (!args)
+	tokens = malloc(sizeof(char *) * 64);
+	if (!tokens)
 		return (NULL);
 
 	token = strtok(line, " \t\n");
 	while (token)
 	{
-		args[i++] = token;
+		tokens[i++] = token;
 		token = strtok(NULL, " \t\n");
 	}
-	args[i] = NULL;
+	tokens[i] = NULL;
 
-	return (args);
+	return (tokens);
 }
