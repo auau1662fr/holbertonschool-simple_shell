@@ -7,19 +7,24 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <errno.h>
-#include <stddef.h>
-
-/* Function prototypes */
-char **parse_line(char *line);
-char *find_path(char *cmd);
-void execute_cmd(char **argv);
-int handle_builtin(char **argv);
-void builtin_exit(char **argv);
-void builtin_env(char **argv);
-void handle_sigint(int sig);
 
 extern char **environ;
 
-#endif
+/* main */
+char **parse_line(char *line);
 
+/* exec */
+int execute_cmd(char **argv);
+
+/* path */
+char *find_path(char *cmd);
+
+/* builtins */
+int handle_builtin(char **argv);
+int builtin_exit(char **argv);
+int builtin_env(char **argv);
+
+/* signals */
+void handle_sigint(int sig);
+
+#endif
