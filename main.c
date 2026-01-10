@@ -1,26 +1,31 @@
 #include "hsh.h"
 
 /**
- * read_command - read input from stdin
+ * read_command - Reads a line from standard input
  *
- * Return: input line
+ * Return: Pointer to the line read, or NULL on EOF
  */
 char *read_command(void)
 {
 	char *line = NULL;
 	size_t len = 0;
+	ssize_t nread;
 
-	if (getline(&line, &len, stdin) == -1)
+	nread = getline(&line, &len, stdin);
+	if (nread == -1)
 	{
 		free(line);
 		return (NULL);
 	}
+
 	return (line);
 }
 
 /**
- * process_command - handle command execution
- * @args: arguments
+ * process_command - Processes and executes a command
+ * @args: Array of arguments
+ *
+ * Return: void
  */
 void process_command(char **args)
 {
@@ -33,11 +38,10 @@ void process_command(char **args)
 	execute_cmd(args);
 }
 
-
 /**
- * main - simple shell
+ * main - Entry point of the simple shell
  *
- * Return: 0
+ * Return: Always 0
  */
 int main(void)
 {
@@ -60,6 +64,11 @@ int main(void)
 
 		free(args);
 		free(line);
+
+		if (!isatty(STDIN_FILENO))
+			break;
 	}
+
 	return (0);
 }
+
