@@ -1,14 +1,16 @@
 #include "hsh.h"
-#include <stdio.h>
 #include <signal.h>
+#include <unistd.h>
 
 /**
- * handle_sigint - handle Ctrl+C
+ * handle_sigint - handles Ctrl+C
  * @sig: signal number
+ *
+ * Return: void
  */
 void handle_sigint(int sig)
 {
 	(void)sig;
-	printf("\n($) ");
-	fflush(stdout);
+	write(STDOUT_FILENO, "\n($) ", 5);
 }
+

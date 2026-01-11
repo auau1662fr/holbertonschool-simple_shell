@@ -1,18 +1,21 @@
 #include "hsh.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 /**
- * read_command - Reads a line from standard input
+ * read_command - reads a line from stdin
  *
- * Return: Pointer to the line read, or NULL on EOF
+ * Return: pointer to line, or NULL on EOF
  */
 char *read_command(void)
 {
 	char *line = NULL;
 	size_t len = 0;
-	ssize_t nread;
+	ssize_t read;
 
-	nread = getline(&line, &len, stdin);
-	if (nread == -1)
+	read = getline(&line, &len, stdin);
+	if (read == -1)
 	{
 		free(line);
 		return (NULL);
@@ -22,8 +25,8 @@ char *read_command(void)
 }
 
 /**
- * process_command - Processes and executes a command
- * @args: Array of arguments
+ * process_command - handles execution flow
+ * @args: tokenized command
  *
  * Return: void
  */
@@ -39,21 +42,19 @@ void process_command(char **args)
 }
 
 /**
- * main - Entry point of the simple shell
+ * main - simple shell entry point
  *
- * Return: Always 0
+ * Return: 0
  */
 int main(void)
 {
 	char *line;
 	char **args;
 
-	signal(SIGINT, handle_sigint);
-
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-			write(STDOUT_FILENO, "($) ", 4);
+			printf("($) ");
 
 		line = read_command();
 		if (!line)
@@ -64,11 +65,7 @@ int main(void)
 
 		free(args);
 		free(line);
-
-		if (!isatty(STDIN_FILENO))
-			break;
 	}
 
 	return (0);
 }
-

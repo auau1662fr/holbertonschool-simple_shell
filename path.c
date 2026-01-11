@@ -1,47 +1,62 @@
 #include "hsh.h"
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdio.h>
 
 /**
- * find_path - find the command in PATH
+ * build_path - builds full executable path
+ * @dir: directory from PATH
  * @cmd: command name
  *
- * Return: full path if found, NULL otherwise
+ * Return: full path string
+ */
+static char *build_path(char *dir, char *cmd)
+{
+	char *path;
+	size_t len;
+
+	len = strlen(dir) + strlen(cmd) + 2;
+	path = malloc(len);
+	if (!path)
+		return (NULL);
+
+	sprintf(path, "%s/%s", dir, cmd);
+	return (path);
+}
+
+/**
+ * find_path - finds command in PATH
+ * @cmd: command
+ *
+ * Return: full path or NULL
  */
 char *find_path(char *cmd)
 {
-	char *path_env, *path_copy, *dir, *full_path;
-	size_t len;
+	char *env, *copy, *dir, *path;
 
 	if (strchr(cmd, '/'))
-	{
-		if (access(cmd, X_OK) == 0)
-			return (strdup(cmd));
-		return (NULL);
-	}
+		return (access(cmd, X_OK) == 0 ? strdup(cmd) : NULL);
 
-	path_env = getenv("PATH");
-	if (!path_env)
+	env = getenv("PATH");
+	if (!env)
 		return (NULL);
 
-	path_copy = strdup(path_env);
-	dir = strtok(path_copy, ":");
+	copy = strdup(env);
+	dir = strtok(copy, ":");
 
 	while (dir)
 	{
-		len = strlen(dir) + strlen(cmd) + 2;
-		full_path = malloc(len);
-		if (!full_path)
-			return (NULL);
-
-		sprintf(full_path, "%s/%s", dir, cmd);
-		if (access(full_path, X_OK) == 0)
+		path = build_path(dir, cmd);
+		if (path && access(path, X_OK) == 0)
 		{
-			free(path_copy);
-			return (full_path);
+			free(copy);
+			return (path);
 		}
-		free(full_path);
+		free(path);
 		dir = strtok(NULL, ":");
 	}
 
-	free(path_copy);
+	free(copy);
 	return (NULL);
 }

@@ -1,33 +1,37 @@
 #include "hsh.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 /**
- * execute_cmd - execute external command
- * @args: arguments array
+ * execute_cmd - executes a command
+ * @args: arguments
+ *
+ * Return: void
  */
 void execute_cmd(char **args)
 {
 	pid_t pid;
-	int status;
-	char *cmd_path;
+	char *path;
 
-	cmd_path = find_path(args[0]);
-	if (!cmd_path)
+	path = find_path(args[0]);
+	if (!path)
 	{
-		fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+		fprintf(stderr, "%s: command not found\n", args[0]);
 		return;
 	}
 
 	pid = fork();
 	if (pid == 0)
 	{
-		execve(cmd_path, args, environ);
+		execve(path, args, environ);
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}
-	else if (pid < 0)
-		perror("fork");
 	else
-		waitpid(pid, &status, 0);
+		wait(NULL);
 
-	free(cmd_path);
+	free(path);
 }
+
