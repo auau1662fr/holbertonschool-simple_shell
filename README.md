@@ -45,7 +45,7 @@ echo "ls -l" | ./hsh
 cat file.txt | ./hsh
 
 
-🛠️ Project Structure
+Project Structure
 ├── main.c        # Program entry point and main loop
 ├── parse.c       # Command parsing and tokenization
 ├── exec.c        # Process creation and command execution
